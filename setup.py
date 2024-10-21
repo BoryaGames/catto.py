@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages  # type: ignore
 
+
 def readme():
     with open("README.md", "r") as f:
         return f.read()
+
 
 setup(
     name="catto.py",
