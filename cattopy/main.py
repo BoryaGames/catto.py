@@ -95,7 +95,7 @@ class Server:
                     }
                 )
                 await send(
-                    {"type": "http.response.body", "body": result.content.encode()}
+                    {"type": "http.response.body", "body": result.content}
                 )
             elif result == Skip:
                 continue
@@ -258,25 +258,25 @@ class Response:
         self.request = request
         self.status = status
         self.headers = headers
-        self.content = ""
+        self.content = b""
 
     def text(self, content: str):
-        self.content = content
+        self.content = content.encode()
         self.headers["content-type"] = "text/plain"
         return self
 
     def json(self, content: dict[Any, Any]):
-        self.content = json.dumps(content, indent=2)
+        self.content = json.dumps(content, indent=2).encode()
         self.headers["content-type"] = "application/json"
         return self
 
     def html(self, content: str):
-        self.content = content
+        self.content = content.encode()
         self.headers["content-type"] = "text/html"
         return self
 
     def file(self, path: str):
-        with open(path, "r") as file:
+        with open(path, "rb") as file:
             self.content = file.read()
         self.headers["content-type"] = mimetypes.guess_type(path)[0] or "text/plain"
         return self
