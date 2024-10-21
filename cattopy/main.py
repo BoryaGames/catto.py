@@ -37,6 +37,7 @@ class Server:
         self.debug = debug
         self.config = uvicorn.Config(
             self._makehandler(),
+            host="0.0.0.0",
             port=self.port,
             log_level="trace" if self.debug else "error",
             headers=[("server", "catto.py")],
@@ -109,7 +110,7 @@ class Server:
         await send({"type": "http.response.body", "body": "404: Not Found".encode()})
 
     def running(self, func: Callable[[], Any]) -> Callable[[], Any]:
-        self._onrunning = func
+        self.onRunning = func
         return func
 
     def run(self):
