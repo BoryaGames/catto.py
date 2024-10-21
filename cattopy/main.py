@@ -52,7 +52,7 @@ class Server:
             "^"
             + re.sub(
                 r"/{([a-zA-Z0-9_]+)}",
-                "/(?P<\\g<1>>[a-zA-Z0-9_]+)",
+                "/(?P<\\g<1>>[a-zA-Z0-9_\\.]+)",
                 path.replace("*", ".*"),
                 0,
             )
@@ -176,7 +176,7 @@ class Server:
     def static(self, prefix: str, path: str):
         async def _middleware(request: Request):
             rootPath = os.path.abspath(path)
-            if request.path == prefix or request.path.startswith(prefix + "/"):
+            if request.path == prefix or request.path.startswith(re.sub(r"/+", "/", prefix + "/", 0)):
                 currentPath = os.path.join(
                     rootPath,
                     request.path.removeprefix(prefix)
